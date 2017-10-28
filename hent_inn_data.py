@@ -50,8 +50,8 @@ class PostgresDataInsert:
     def insert_data(self):
         """ Inserts data into the Postgre database. """
         self.cur.execute(
-            "INSERT INTO loype (punkt) \
-             VALUES (ST_GeometryFromText('POINT(90 30)'))")
+            "INSERT INTO loype (punkt,tid) \
+             VALUES (ST_GeometryFromText('POINT(90 30)'), '2011-03-03 10:56:04+00')")
         self.conn.commit()
         print('Data added.')
 
