@@ -57,7 +57,8 @@ class Postgres_data_insert:
         # execute a statement
         self.cur.execute("INSERT INTO loype (punkt) VALUES (ST_GeometryFromText('POINT(50 20)'))")
         self.conn.commit()
-        self.cur.close()
+        print('Data added.')
+
     
     def disconnect(self):
         # close the communication with the PostgreSQL
@@ -66,8 +67,8 @@ class Postgres_data_insert:
  
 if __name__ == '__main__':
     sette_inn_data = Postgres_data_insert()
-    sette_inn_data.connect
-    sette_inn_data.insert_data
-    sette_inn_data.disconnect
+    sette_inn_data.connect()
+    sette_inn_data.insert_data()
+    sette_inn_data.disconnect()
     
     
