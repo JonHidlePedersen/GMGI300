@@ -47,11 +47,13 @@ class PostgresDataInsert:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
-    def insert_data(self,lat=59.672,long=10.795,date_time='2011-03-03 10:56:04+00'):
+    def insert_data(self, lat=59.672, long=10.795,
+                    date_time='2011-03-03 10:56:04+00'):
         """ Inserts position and time data into the Postgre database. """
         self.cur.execute(
             "INSERT INTO loype (punkt,tid) \
-             VALUES (ST_GeometryFromText('POINT(%s %s)'), %s)", (lat, long, date_time))
+             VALUES (ST_GeometryFromText('POINT(%s %s)'), %s)",
+            (lat, long, date_time))
         self.conn.commit()
         print('Data added.')
 
