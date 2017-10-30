@@ -95,12 +95,12 @@ def extractdatafromfile(filnamn):
 
 
 if __name__ == '__main__':
-    kk = extractdatafromfile('preppemaskin_aas_2010_01-03.txt')
-    print(kk[1][2])
+    lopyemaskin_data = extractdatafromfile('preppemaskin_aas_2010_01-03.txt')
+    sette_inn_data = PostgresDataInsert()
+    sette_inn_data.connect()
 
-    for line in kk:
+    for i, line in enumerate(lopyemaskin_data):
+        sette_inn_data.insert_data(line[0],line[1],line[2])
+        print(i)
 
-    # sette_inn_data = PostgresDataInsert()
-    # sette_inn_data.connect()
-    # sette_inn_data.insert_data()
-    # sette_inn_data.disconnect()
+    sette_inn_data.disconnect()
