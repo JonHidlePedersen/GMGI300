@@ -30,7 +30,7 @@ class PostgresDataInsert:
             # connect to the PostgreSQL server
             print('Connecting to the PostgreSQL database...')
             self.conn = psycopg2.connect(
-                "dbname={0} user={1} password={2}".format(self.db_name, self.dbuser, self.dbpassword))
+                "dbname={0} user={1} password={2} port={3}".format(self.db_name, self.dbuser, self.dbpassword, self.dbport))
 
             # create a cursor
             self.cur = self.conn.cursor()
