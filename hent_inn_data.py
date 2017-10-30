@@ -63,8 +63,44 @@ class PostgresDataInsert:
         print('Database connection ended.')
 
 
+def extractdatafromfile(filnamn):
+    """
+    Inputt: text or csv file.
+    This function reads data from a file and stores it in a list. Each line is stored in a seperate list and changes the inputt to str, int or float.
+    Outputt: A nested list.
+    """
+
+    ## Reads the file.
+    infile = open(filnamn, "r")
+    indata = infile.readlines()
+    infile.close()
+
+    ## Splits data using ; and changes numbers from str to int/float.
+    splitdata = []
+    outputt = []
+    for line in indata:
+        splitdata = line.split(";")
+
+        # Loop that evaluvates if a value is a number or a string. Changes datatype if it is a number.
+        for i, value in enumerate(splitdata):
+            try:
+                if isinstance(eval(value), (float, int)):
+                    splitdata[i] = eval(value)
+            except:
+                """String is not float or int."""
+
+        outputt.append(splitdata)
+
+    return outputt
+
+
 if __name__ == '__main__':
-    sette_inn_data = PostgresDataInsert()
-    sette_inn_data.connect()
-    sette_inn_data.insert_data()
-    sette_inn_data.disconnect()
+    kk = extractdatafromfile('preppemaskin_aas_2010_01-03.txt')
+    print(kk[1][2])
+
+    for line in kk:
+
+    # sette_inn_data = PostgresDataInsert()
+    # sette_inn_data.connect()
+    # sette_inn_data.insert_data()
+    # sette_inn_data.disconnect()
