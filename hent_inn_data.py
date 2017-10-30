@@ -16,11 +16,12 @@ class PostgresDataInsert:
     """
 
     def __init__(self, db_name='gmgi300db', dbuser='postgres',
-                 dbpassword='postgres'):
+                 dbpassword='postgres', dbport='5432'):
         """Constructor for the instance."""
         self.db_name = db_name
         self.dbuser = dbuser
         self.dbpassword = dbpassword
+        self.dbport = dbport
 
     def connect(self):
         """ Connect to the PostgreSQL database server """
@@ -29,7 +30,7 @@ class PostgresDataInsert:
             # connect to the PostgreSQL server
             print('Connecting to the PostgreSQL database...')
             self.conn = psycopg2.connect(
-                "dbname='gmgi300db' user='postgres' password='postgres'")
+                "dbname={0} user={1} password={2}".format(self.db_name, self.dbuser, self.dbpassword))
 
             # create a cursor
             self.cur = self.conn.cursor()
@@ -55,7 +56,6 @@ class PostgresDataInsert:
              VALUES (ST_GeometryFromText('POINT(%s %s)'), %s)",
             (lat, long, date_time))
         self.conn.commit()
-        print('Data added.')
 
     def disconnect(self):
         """ Disconnects from the PostgreSQL database server """
