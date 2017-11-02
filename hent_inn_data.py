@@ -48,13 +48,27 @@ class PostgresDataInsert:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
+    def create_loype(self):
+        self.cur.execute("DROP table loype;")
+        self.cur.execute("CREATE TABLE loype (tid TIMESTAMP WITH TIME ZONE);")
+        self.cur.execute("SELECT AddGeometryColumn('loype','punkt',4326,'POINT',2);")
+        self.cur.execute("DELETE FROM loype;")
+        print('Tabel loype created')
+        self.conn.commit()
+
+    def create_loypetid(self):
+        self.cur.execute("DROP TABLE IF EXISTS loypetid;")
+        self.cur.execute("CREATE TABLE loypetid AS select tid from loype;")
+        print('Tabel loypetid created')
+        self.conn.commit()
+
     def insert_data(self, lat=59.672, long=10.795,
                     date_time='2011-03-03 10:56:04+00'):
         """ Inserts position and time data into the Postgre database. """
-        self.cur.execute(
-            "INSERT INTO loype (punkt,tid) \
-             VALUES (ST_GeometryFromText('POINT(%s %s)'), %s)",
-            (lat, long, date_time))
+        geo = 'Point({} {})'.format(str(long), str(lat))
+        self.cur.execute('INSERT INTO loype (tid, punkt) '
+                         'VALUES (%s, (ST_GeometryFromText(%s , 4326)))'
+                         , (date_time, geo))
         self.conn.commit()
 
     def disconnect(self):
@@ -96,11 +110,12 @@ def extractdatafromfile(filnamn):
 
 if __name__ == '__main__':
     lopyemaskin_data = extractdatafromfile('preppemaskin_aas_2010_01-03.txt')
-    sette_inn_data = PostgresDataInsert()
+    sette_inn_data = PostgresDataInsert(dbpassword='dpjn8459', dbport='5433')
     sette_inn_data.connect()
+    sette_inn_data.create_loype()
 
     for i, line in enumerate(lopyemaskin_data):
         sette_inn_data.insert_data(line[0],line[1],line[2])
         print(i)
-
+    sette_inn_data.create_loypetid()
     sette_inn_data.disconnect()
