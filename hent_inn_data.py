@@ -30,7 +30,10 @@ class PostgresDataInsert:
             # connect to the PostgreSQL server
             print('Connecting to the PostgreSQL database...')
             self.conn = psycopg2.connect(
-                "dbname={0} user={1} password={2} port={3}".format(self.db_name, self.dbuser, self.dbpassword, self.dbport))
+                "dbname={0} user={1} password={2} port={3}".format(self.db_name,
+                                                                   self.dbuser,
+                                                                   self.dbpassword,
+                                                                   self.dbport))
 
             # create a cursor
             self.cur = self.conn.cursor()
@@ -49,16 +52,14 @@ class PostgresDataInsert:
             print(error)
 
     def create_loype(self):
-        self.cur.execute("DROP table loype;")
-        self.cur.execute("CREATE TABLE loype (tid TIMESTAMP WITH TIME ZONE);")
-        self.cur.execute("SELECT AddGeometryColumn('loype','punkt',4326,'POINT',2);")
-        self.cur.execute("DELETE FROM loype;")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS loype (id SERIAL PRIMARY KEY, tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
         print('Tabel loype created')
         self.conn.commit()
 
     def create_loypetid(self):
-        self.cur.execute("DROP TABLE IF EXISTS loypetid;")
-        self.cur.execute("CREATE TABLE loypetid AS select tid from loype;")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS loypetid AS select tid from loype;")
         print('Tabel loypetid created')
         self.conn.commit()
 
@@ -84,16 +85,15 @@ def extractdatafromfile(filnamn):
     Outputt: A nested list.
     """
 
-    ## Reads the file.
+    # Reads the file.
     infile = open(filnamn, "r")
     indata = infile.readlines()
     infile.close()
 
-    ## Splits data using ; and changes numbers from str to int/float.
-    splitdata = []
+    # Splits data using ; and changes numbers from str to int/float.
     outputt = []
-    for line in indata:
-        splitdata = line.split(";")
+    for LINE in indata:
+        splitdata = LINE.split(";")
 
         # Loop that evaluvates if a value is a number or a string. Changes datatype if it is a number.
         for i, value in enumerate(splitdata):
@@ -110,12 +110,12 @@ def extractdatafromfile(filnamn):
 
 if __name__ == '__main__':
     lopyemaskin_data = extractdatafromfile('preppemaskin_aas_2010_01-03.txt')
-    sette_inn_data = PostgresDataInsert(dbpassword='dpjn8459', dbport='5433')
+    sette_inn_data = PostgresDataInsert(db_name='gmgi300db', dbport=5432)
     sette_inn_data.connect()
     sette_inn_data.create_loype()
 
     for i, line in enumerate(lopyemaskin_data):
-        sette_inn_data.insert_data(line[0],line[1],line[2])
+        sette_inn_data.insert_data(line[0], line[1], line[2])
         print(i)
     sette_inn_data.create_loypetid()
     sette_inn_data.disconnect()
