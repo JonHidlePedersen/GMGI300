@@ -8,7 +8,7 @@ import psycopg2
 
 
 class PostgresDataInsert:
-    """This class inserts data into a PostgreSQL database.
+    """This class connects and inserts data into a PostgreSQL database.
     
     Parameters
     ----------
@@ -52,25 +52,32 @@ class PostgresDataInsert:
             print(error)
 
     def create_loype(self):
+        """ Creates the table loype containing the
+            collums id(PK), time and point"""
+
         self.cur.execute(
             "DROP TABLE IF EXISTS loype;")
         self.cur.execute(
             "CREATE TABLE IF NOT EXISTS loype (id SERIAL PRIMARY KEY, \
             tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
-        print('Tabel loype created')
         self.conn.commit()
+        print('Table loype created.')
 
     def create_loypetid(self):
+        """ Creates the table loype_tid containing the
+                    collums time and point"""
+
         self.cur.execute(
             "DROP TABLE IF EXISTS loypetid;")
         self.cur.execute(
             "CREATE TABLE IF NOT EXISTS loypetid AS select tid from loype;")
-        print('Tabel loypetid created')
         self.conn.commit()
+        print('Table loypetid created.')
 
     def insert_data(self, lat=59.672, long=10.795,
                     date_time='2011-03-03 10:56:04+00'):
         """ Inserts position and time data into the Postgre database. """
+
         geo = 'Point({} {})'.format(str(long), str(lat))
         self.cur.execute('INSERT INTO loype (tid, punkt) '
                          'VALUES (%s, (ST_GeometryFromText(%s , 4326)))'
@@ -86,7 +93,8 @@ class PostgresDataInsert:
 def extractdatafromfile(filnamn):
     """
     Inputt: text or csv file.
-    This function reads data from a file and stores it in a list. Each line is stored in a seperate list and changes the inputt to str, int or float.
+    This function reads data from a file and stores it in a list. Each line is
+    stored in a seperate list and changes the inputt to str, int or float.
     Outputt: A nested list.
     """
 
@@ -100,7 +108,8 @@ def extractdatafromfile(filnamn):
     for LINE in indata:
         splitdata = LINE.split(";")
 
-        # Loop that evaluvates if a value is a number or a string. Changes datatype if it is a number.
+        # Loop that evaluvates if a value is a number or a string.
+        # Changes datatype if it is a number.
         for i, value in enumerate(splitdata):
             try:
                 if isinstance(eval(value), (float, int)):
@@ -114,13 +123,19 @@ def extractdatafromfile(filnamn):
 
 
 if __name__ == '__main__':
+    # Reads data from the text file and inserts it into a database.
+    db_name = 'gmgi300db'
+    dbuser = 'postgres'
+    dbpassword = 'postgres'
+    dbport = '5432'
+
     lopyemaskin_data = extractdatafromfile('preppemaskin_aas_2010_01-03.txt')
-    sette_inn_data = PostgresDataInsert(db_name='gmgi300db', dbport=5432)
-    sette_inn_data.connect()
-    sette_inn_data.create_loype()
+    connect_and_insert = PostgresDataInsert(db_name, dbuser, dbpassword dbport)
+    connect_and_insert.connect()
+    connect_and_insert.create_loype()
+
 
     for i, line in enumerate(lopyemaskin_data):
-        sette_inn_data.insert_data(line[0], line[1], line[2])
-        print(i)
-    sette_inn_data.create_loypetid()
-    sette_inn_data.disconnect()
+        connect_and_insert.insert_data(line[0], line[1], line[2])
+    connect_and_insert.create_loypetid()
+    connect_and_insert.disconnect()
