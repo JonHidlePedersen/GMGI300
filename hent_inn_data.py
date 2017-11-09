@@ -52,33 +52,45 @@ class PostgresDataInsert:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
-    def create_table(self, name_table):
-        """ Creates a table containing the
+    def create_table_loype(self):
+        """ Creates the table loype containing the
             collums id(PK), time and point"""
 
         self.cur.execute(
-            "DROP TABLE IF EXISTS name_table;")
+            "DROP TABLE IF EXISTS loype;")
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS name_table (id SERIAL PRIMARY KEY, \
+            "CREATE TABLE IF NOT EXISTS loype (id SERIAL PRIMARY KEY, \
             tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
         self.conn.commit()
-        print('Table {0} created.'.format(name_table))
+        print('Table loype created.')
 
-    def insert_position_data(self, name_table):
+    def create_table_loypetid(self):
+        """ Creates the table loypetid containing the
+            collums id(PK), time and point"""
+
+        self.cur.execute(
+            "DROP TABLE IF EXISTS loypetid;")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS loypetid (id SERIAL PRIMARY KEY, \
+            tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
+        self.conn.commit()
+        print('Table loypetid created.')
+
+    def insert_position_data(self):
         """ Inserts position and time data into the Postgre database. """
 
 
-        print('Started inserting data into {0}.'.format(name_table))
+        print('Started inserting data into loype.')
         for i, line in enumerate(self.outputt):
             lat = line[0]
             lon = line[1]
             date_time = line[2]
             geo = 'Point({} {})'.format(str(lon), str(lat))
-            self.cur.execute('INSERT INTO name_table (tid, punkt) '
+            self.cur.execute('INSERT INTO loype (tid, punkt) '
                              'VALUES (%s, (ST_GeometryFromText(%s , 4326)))'
                              , (date_time, geo))
         self.conn.commit()
-        print('Finished inserting {0} rows into {1}.'.format(i, name_table))
+        print('Finished inserting {0} rows into loype.'.format(i))
 
     def disconnect(self):
         """ Disconnects from the PostgreSQL database server """
@@ -124,14 +136,12 @@ if __name__ == '__main__':
     dbuser = 'postgres'
     dbpassword = 'postgres'
     dbport = '5432'
-    table_one = 'loype'
-    table_two = 'loypetid'
     data_from_file = 'preppemaskin_aas_2010_01-03.txt'
 
     connect_and_insert = PostgresDataInsert(db_name, dbuser, dbpassword, dbport)
     connect_and_insert.connect()
-    connect_and_insert.create_table(table_one)
+    connect_and_insert.create_table_loype()
     connect_and_insert.extractdatafromfile(data_from_file)
-    connect_and_insert.insert_position_data(table_one)
-    connect_and_insert.create_table(table_two)
+    connect_and_insert.insert_position_data()
+    connect_and_insert.create_table_loypetid()
     connect_and_insert.disconnect()
