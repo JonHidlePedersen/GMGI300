@@ -30,10 +30,11 @@ class PostgresDataInsert:
             # connect to the PostgreSQL server
             print('Connecting to the PostgreSQL database...')
             self.conn = psycopg2.connect(
-                "dbname={0} user={1} password={2} port={3}".format(self.db_name,
-                                                                   self.dbuser,
-                                                                   self.dbpassword,
-                                                                   self.dbport))
+                "dbname={0} user={1} password={2} port={3}" \
+                    .format(self.db_name,
+                            self.dbuser,
+                            self.dbpassword,
+                            self.dbport))
 
             # create a cursor
             self.cur = self.conn.cursor()
@@ -51,46 +52,45 @@ class PostgresDataInsert:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
-    def create_table(self):
-        """ Creates the table loype containing the
+    def create_table(self, name_table):
+        """ Creates a table containing the
             collums id(PK), time and point"""
 
         self.cur.execute(
-            "DROP TABLE IF EXISTS loype;")
+            "DROP TABLE IF EXISTS name_table;")
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS loype (id SERIAL PRIMARY KEY, \
+            "CREATE TABLE IF NOT EXISTS name_table (id SERIAL PRIMARY KEY, \
             tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
         self.conn.commit()
-        print('Table loype created.')
+        print('Table {0} created.'.format(name_table))
 
-
-    def insert_position_data(self):
+    def insert_position_data(self, name_table):
         """ Inserts position and time data into the Postgre database. """
 
+
+        print('Started inserting data into {0}.'.format(name_table))
         for i, line in enumerate(self.outputt):
             lat = line[0]
             lon = line[1]
             date_time = line[2]
             geo = 'Point({} {})'.format(str(lon), str(lat))
-            self.cur.execute('INSERT INTO loype (tid, punkt) '
+            self.cur.execute('INSERT INTO name_table (tid, punkt) '
                              'VALUES (%s, (ST_GeometryFromText(%s , 4326)))'
                              , (date_time, geo))
         self.conn.commit()
-        print('Data inserted.')
-
-
+        print('Finished inserting {0} rows into {1}.'.format(i, name_table))
 
     def disconnect(self):
         """ Disconnects from the PostgreSQL database server """
         self.cur.close()
         print('Database connection ended.')
 
-
     def extractdatafromfile(self, filnamn):
         """
         Inputt: text or csv file.
-        This function reads data from a file and stores it in a list. Each line is
-        stored in a seperate list and changes the inputt to str, int or float.
+        This function reads data from a file and stores it in a list. Each line
+        is stored in a seperate list and changes the inputt to str, int or
+        float.
         Outputt: A nested list.
         """
 
@@ -124,12 +124,14 @@ if __name__ == '__main__':
     dbuser = 'postgres'
     dbpassword = 'postgres'
     dbport = '5432'
-
+    table_one = 'loype'
+    table_two = 'loypetid'
     data_from_file = 'preppemaskin_aas_2010_01-03.txt'
 
     connect_and_insert = PostgresDataInsert(db_name, dbuser, dbpassword, dbport)
     connect_and_insert.connect()
-    connect_and_insert.create_table()
+    connect_and_insert.create_table(table_one)
     connect_and_insert.extractdatafromfile(data_from_file)
-    connect_and_insert.insert_position_data()
+    connect_and_insert.insert_position_data(table_one)
+    connect_and_insert.create_table(table_two)
     connect_and_insert.disconnect()
