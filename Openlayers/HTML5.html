@@ -1,0 +1,120 @@
+
+<html>
+<head>
+  <title>Prosjektoppgave (NMBU, Skispor)</title>
+  <meta content="text/html;charset=utf-8" http-equiv=Content-Type>
+  <link rel="stylesheet" href="https://openlayers.org/en/v4.4.2/css/ol.css" type="text/css">
+  <script src="http://openlayers.org/api/2.11/OpenLayers.js"></script>
+
+  <script type="text/javascript">
+    
+var kart, skisporLayer, OLLayer, NDLayer;
+var lat=60, lon=10;
+
+function errorLowAccuracy(error) {
+  document.getElementById('message3').innerHTML = "Message 3: Posisjonsfeil: Kode " + error.code +": " + error.message
+  //alert("No position");
+} // errorLowAccuracy
+
+function errorHighAccuracy(error) {
+  if (error.code == error.TIMEOUT) {
+    test = navigator.geolocation.getCurrentPosition(okPosition, errorLowAccuracy,{timeout:2000, enableHighAccuracy: false});
+  }
+  else {
+    document.getElementById('message3').innerHTML = "Message 3: Posisjonsfeil: Kode " + error.code +": " + error.message
+    //alert("No position");
+  }
+} // errorHighAccuracy
+
+function okPosition(position) {
+  //alert("Koordinater: "+position.coords.latitude+", "+position.coords.longitude+" - "+position.coords.accuracy);
+  lat = position.coords.latitude;
+  lon = position.coords.longitude;
+  acc = position.coords.accuracy;
+  document.getElementById('message4').innerHTML = "Message 4: Posisjon: ("+lon+", "+lat+")"+" - "+acc
+  sted = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lon, lat));
+  stedLayer.addFeatures(sted);
+  apprdiff = acc/111000;
+  accbox = new OpenLayers.Feature.Vector(new OpenLayers.Bounds(lon-apprdiff,lat-apprdiff,lon+apprdiff,lat+apprdiff).toGeometry());
+  accuracyLayer.addFeatures(accbox);
+  if (kart) {
+    kart.moveTo(new OpenLayers.LonLat(lon,lat),15);
+  }
+} // okPosition
+
+function init(){
+  // We need to check if the browser has the correct capabilities.
+  if (navigator.geolocation) {
+    document.getElementById('message1').innerHTML = "Message 1: Navigator support!"
+    //alert("navigator support!");
+  } else {
+    document.getElementById('message1').innerHTML = "Message 1: No navigator support!"
+    //alert("no navigator support!");
+  } // if else geolocation
+
+  kart = new OpenLayers.Map('kart');
+  skisporLayer = new OpenLayers.Layer.WMS("skispor-kart WMS"
+  , "http://192.168.56.101/cgi-bin/mapserv?map=/home/gis/Dokumenter/data/oppgave3_3mapserver/mapserverwms.map&SERVICE=WMS"
+  , {layers: 'punkt', transparent: 'true'}
+  , {singleTile: true, ratio: 1, isBaseLayer: false} );
+  NDLayer = new OpenLayers.Layer.WMS( "Norge Digitalt topo"
+  , "http://openwms.statkart.no/skwms1/wms.topo2.graatone"
+  , {layers: 'topo2_graatone_WMS', transparent: 'true'}
+  , {singleTile: true, ratio: 1.2, isBaseLayer: true} );
+  stedLayer = new OpenLayers.Layer.Vector("Location");
+  accuracyLayer = new OpenLayers.Layer.Vector("Accuracy");
+  OLLayer = new OpenLayers.Layer.WMS( "VMap0 - OpenLayers WMS"
+  , "http://vmap0.tiles.osgeo.org/wms/vmap0"
+  , {layers: 'basic'});
+  kart.addLayer(OLLayer);
+  kart.addLayer(NDLayer);
+  kart.addLayer(stedLayer);
+  kart.addLayer(accuracyLayer);
+  kart.addLayer(skisporLayer);
+  kart.moveTo(new OpenLayers.LonLat(lon,lat),6);
+  kart.moveTo(new OpenLayers.LonLat(10,60),6);
+  kart.addControl(new OpenLayers.Control.LayerSwitcher());
+
+  // Med Firefox i Ubuntu LTS fungerer ikke dette!
+  if (navigator.geolocation) {
+    test = navigator.geolocation.getCurrentPosition(okPosition, errorHighAccuracy,{timeout:2000, enableHighAccuracy: true});
+    alert("getcurrentpos finished"+test)
+    if (kart) {
+      kart.moveTo(new OpenLayers.LonLat(lon,lat),6);
+    }
+  } // if else geolocation
+
+} // init
+</script>
+
+<style>
+.minikart {
+width: 1000px;
+height: 500px;
+border: 1px solid #cc6;
+}
+</style>
+</head>
+<body onload="init()">
+<h1 id="title">Prosjektoppgave</h1>
+
+<a href="http://dev.w3.org/geo/api/spec-source.html">HTML 5 geolocation</a>.<br>
+Sted og tilnærmet nøyaktighet vises dersom nettleseren støtter
+HTML5 navigator og geolocation (og du tillater lesing av din posisjon).
+
+<div id="message1">Message 1</div>
+<div id="message2">Message 2</div>
+<div id="message3">Message 3</div>
+<div id="message4">Message 4</div>
+<div id="kart" class="minikart"></div>
+<div id="docs">
+<p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
+</div>
+
+
+<hr />
+</body>
+</html>
+
+
+
