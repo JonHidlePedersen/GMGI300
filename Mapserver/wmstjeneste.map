@@ -24,6 +24,23 @@ MAP
 	END # Metadata
 	END # Web
 	
+	
+	# Start of symbol definition
+	SYMBOL
+	  # Symbol name (referenced in STYLEs)
+	  NAME "circle"
+	  TYPE ellipse # Type of symbol
+	  # Start of the symbol geometry
+	  POINTS
+		1 1
+	  END # end of POINTS
+	  # The symbol should be filled
+	  FILLED true
+	  # Place the according to its center
+	  ANCHORPOINT 0.5 0.5
+	END # end of SYMBOL
+	
+	
 	# Start of LAYER DEFINITIONS ---
 	LAYER # States polygon layer
 		DEBUG ON
@@ -47,10 +64,10 @@ MAP
 		NAME "Track created by track machine."
 		STYLE
 		  # Symbol to be used (reference)
-		  SYMBOL "ellipse" # Type of symbol
+		  SYMBOL "circle" # Type of symbol
 		  SIZE 10
 		  # Colour (RGB) - blue
-		  COLOR 0 0 255
+		  COLOR 0 0 0
 		END # Style
 		END # Class
 	END # Layer States polygon
