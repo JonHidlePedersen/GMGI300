@@ -9,16 +9,16 @@ MAP
 	END # Projection
 	
 	WEB
-	IMAGEPATH "C:\Users\landsat4\Documents\Mapserver\oppgave3_3mapserver\temp" # kor den legger bildene
-      IMAGEURL "C:\Users\landsat4\Documents\Mapserver\oppgave3_3mapserver\temp"
-      TEMPLATE "C:\Users\landsat4\Documents\Mapserver\oppgave3_3mapserver\template.html"
-      LOG "C:\Users\landsat4\Documents\Mapserver\oppgave3_3mapserver\tempmapserver.log"
+	IMAGEPATH "C:\Users\landsat4\Documents\GMGI300\Mapserver\tmp" # kor den legger bildene
+      IMAGEURL "C:\Users\landsat4\Documents\GMGI300\Mapserver\tmp"
+      TEMPLATE "C:\Users\landsat4\Documents\GMGI300\Mapserver\template.html"
+      LOG "C:\Users\landsat4\Documents\GMGI300\Mapserver\tmp\mapserverlog.log"
 	
 	METADATA
-	"wms_title" "Loypepunkt"
+	"wms_title" "Position of a track machine"
 	"wms_enable_request" "*"
 	"wms_onlineresource"
-	"http://localhost/cgi-bin/mapserv.exe?map=C:\Users\landsat4\Documents\Mapserver\oppgave3_3mapserver\wmstjeneste2.map&SERVICE=WMS"
+	"http://localhost/cgi-bin/mapserv.exe?map=C:\Users\landsat4\Documents\GMGI300\Mapserver\wmstjeneste.map&SERVICE=WMS"
 	"wms_encoding" "UTF-8"
 	"wms_enable_request" "*"
 	END # Metadata
@@ -27,7 +27,7 @@ MAP
 	# Start of LAYER DEFINITIONS ---
 	LAYER # States polygon layer
 		DEBUG ON
-		NAME fylker
+		NAME trackmachine
 		CONNECTIONTYPE POSTGIS
         CONNECTION "host=localhost port=5432 dbname=gmgi300db user=postgres password=postgres"
 		PROCESSING "CLOSE_CONNECTION=DEFER"
@@ -36,7 +36,7 @@ MAP
 		TYPE POINT
 		OPACITY 50
 		METADATA
-		"wms_title" "Punkter"
+		"wms_title" "Track created by track machine."
 		#"wms_include_items" "*"
 		"wms_srs" "EPSG:4326"
 		END # Metadata
@@ -44,12 +44,13 @@ MAP
 		"init=epsg:4326"
 		END # Projection
 		CLASS
-		NAME "Fylkene"
+		NAME "Track created by track machine."
 		STYLE
-			COLOR 255 200 0
-            OUTLINECOLOR 150 200 60
-            SYMBOL "dot.png"
-            SIZE 40
+		  # Symbol to be used (reference)
+		  SYMBOL "ellipse" # Type of symbol
+		  SIZE 10
+		  # Colour (RGB) - blue
+		  COLOR 0 0 255
 		END # Style
 		END # Class
 	END # Layer States polygon
