@@ -5,11 +5,13 @@
   <meta content="text/html;charset=utf-8" http-equiv=Content-Type>
   <link rel="stylesheet" href="https://openlayers.org/en/v4.4.2/css/ol.css" type="text/css">
   <script src="http://openlayers.org/api/2.11/OpenLayers.js"></script>
+  <script src="https://openlayers.org/en/v4.4.2/build/ol.js"></script>
 
   <script type="text/javascript">
     
-var kart, skisporLayer, OLLayer, NDLayer;
-var lat=60, lon=10;
+var kart, skisporLayer, OLLayer, NDLayer, Orto;
+var lat=59.660, lon=10.770;
+
 
 function errorLowAccuracy(error) {
   document.getElementById('message3').innerHTML = "Message 3: Posisjonsfeil: Kode " + error.code +": " + error.message
@@ -31,7 +33,7 @@ function okPosition(position) {
   lat = position.coords.latitude;
   lon = position.coords.longitude;
   acc = position.coords.accuracy;
-  document.getElementById('message4').innerHTML = "Message 4: Posisjon: ("+lon+", "+lat+")"+" - "+acc
+  document.getElementById('message4').innerHTML = "Din posisjon er funnet til: ("+lon+", "+lat+")"+" - "+acc
   sted = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lon, lat));
   stedLayer.addFeatures(sted);
   apprdiff = acc/111000;
@@ -45,10 +47,10 @@ function okPosition(position) {
 function init(){
   // We need to check if the browser has the correct capabilities.
   if (navigator.geolocation) {
-    document.getElementById('message1').innerHTML = "Message 1: Navigator support!"
+    document.getElementById('message1').innerHTML = "Prøver å finne din posisjon."
     //alert("navigator support!");
   } else {
-    document.getElementById('message1').innerHTML = "Message 1: No navigator support!"
+    document.getElementById('message1').innerHTML = "Det var ikkje mogleg å finne din posisjon."
     //alert("no navigator support!");
   } // if else geolocation
 
@@ -61,16 +63,20 @@ function init(){
   , "http://openwms.statkart.no/skwms1/wms.topo2.graatone"
   , {layers: 'topo2_graatone_WMS', transparent: 'true'}
   , {singleTile: true, ratio: 1.2, isBaseLayer: true} );
-  stedLayer = new OpenLayers.Layer.Vector("Location");
-  accuracyLayer = new OpenLayers.Layer.Vector("Accuracy");
+  stedLayer = new OpenLayers.Layer.Vector("Kor er du?");
+  accuracyLayer = new OpenLayers.Layer.Vector("Nøyaktighet");
   OLLayer = new OpenLayers.Layer.WMS( "VMap0 - OpenLayers WMS"
   , "http://vmap0.tiles.osgeo.org/wms/vmap0"
-  , {layers: 'basic'});
-  kart.addLayer(OLLayer);
+  , {layers: 'basic', transparent: 'true'}
+  , {singleTile: true, ratio: 1.2, isBaseLayer: true} );
+  Orto = new OpenLayers.Layer.WMS("Ortobilde", " http://wms.geonorge.no/skwms1/wms.nib", {layers: 'ortofoto'})
+
   kart.addLayer(NDLayer);
+  kart.addLayer(OLLayer);
   kart.addLayer(stedLayer);
   kart.addLayer(accuracyLayer);
   kart.addLayer(skisporLayer);
+  kart.addLayer(Orto);
   kart.moveTo(new OpenLayers.LonLat(lon,lat),6);
   kart.moveTo(new OpenLayers.LonLat(10,60),6);
   kart.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -85,32 +91,81 @@ function init(){
   } // if else geolocation
 
 } // init
-</script>
+var map, infoWindow;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 59.6601043, lng: 10.7703286},
+    zoom: 13
+  });
+  infoWindow = new google.maps.InfoWindow;
 
+  // Try HTML5 geolocation.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      var marker = new google.maps.Marker({
+      position: pos,
+      map: map,
+      title: 'Eg ser deg!',
+      url: 'https://www.nmbu.no/studier/studietilbud/master-femarig/geomatikk'
+  });
+    google.maps.event.addListener(marker, 'click',
+        function() {
+          window.location.href = marker.url;
+    }
+  );
+
+    }, function() {
+      handleLocationError(true, infoWindow, map.getCenter());
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
+}
+  
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(browserHasGeolocation ?
+                        'Error: The Geolocation service failed.' :
+                        'Error: Your browser doesn\'t support geolocation.');
+  infoWindow.open(map);
+}
+</script>
 <style>
 .minikart {
 width: 1000px;
 height: 500px;
 border: 1px solid #cc6;
 }
+.googlemap {
+  width: 400px;
+height: 400px;
+border: 1px solid #cc6;
+}
 </style>
+
 </head>
 <body onload="init()">
 <h1 id="title">Prosjektoppgave</h1>
 
-<a href="http://dev.w3.org/geo/api/spec-source.html">HTML 5 geolocation</a>.<br>
-Sted og tilnærmet nøyaktighet vises dersom nettleseren støtter
-HTML5 navigator og geolocation (og du tillater lesing av din posisjon).
-
-<div id="message1">Message 1</div>
-<div id="message2">Message 2</div>
-<div id="message3">Message 3</div>
-<div id="message4">Message 4</div>
+Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet nøyaktighet.
+<div id="message1"></div>
+<div id="message2"></div>
+<div id="message3"></div>
+<div id="message4"></div>
 <div id="kart" class="minikart"></div>
-<div id="docs">
+<div id="docs"> 
 <p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
 </div>
 
+<div id="map" class='googlemap'></div>
+<script
+ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6WtbZ6sE6frw4D5swRGn-YkoUQQO6Ca0&callback=initMap"></script>
 
 <hr />
 </body>
