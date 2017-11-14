@@ -56,7 +56,7 @@ function init(){
 
   kart = new OpenLayers.Map('kart');
   skisporLayer = new OpenLayers.Layer.WMS("skispor-kart WMS"
-  , "http://192.168.56.101/cgi-bin/mapserv?map=/home/gis/Dokumenter/data/oppgave3_3mapserver/mapserverwms.map&SERVICE=WMS"
+  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste.map&SERVICE=WMS"
   , {layers: 'punkt', transparent: 'true'}
   , {singleTile: true, ratio: 1, isBaseLayer: false} );
   NDLayer = new OpenLayers.Layer.WMS( "Norge Digitalt topo"
