@@ -49,7 +49,7 @@ MAP
         DATA "punkt from loype"
 		STATUS DEFAULT
 		TYPE POINT
-		OPACITY 80
+		OPACITY 100
 		METADATA
 		"wms_title" "Punkter"
 		#"wms_include_items" "*"
