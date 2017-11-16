@@ -135,6 +135,10 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
                         'Error: Your browser doesn\'t support geolocation.');
   infoWindow.open(map);
 }
+var da = new Date()-new Date(2011, 3, 3)
+var year = Math.floor(da/31536000000)
+var month = Math.round(((da/31536000000)-year)*12)
+var tid = ("Det er "+year + " år og ca "+month+" månader sidan preppemaskinen sist kjørte.")
 </script>
 <style>
 .minikart {
@@ -158,6 +162,7 @@ Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet n
 <div id="message2"></div>
 <div id="message3"></div>
 <div id="message4"></div>
+<button type="button" onclick="alert(tid)">Korti kjørte preppemaskinen sist</button>
 <div id="kart" class="minikart"></div>
 <div id="docs"> 
 <p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
@@ -170,6 +175,3 @@ Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet n
 <hr />
 </body>
 </html>
-
-
-
