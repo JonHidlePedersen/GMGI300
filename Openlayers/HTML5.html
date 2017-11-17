@@ -55,12 +55,12 @@ function init(){
   } // if else geolocation
 
   kart = new OpenLayers.Map('kart');
-  skisporLayer = new OpenLayers.Layer.WMS("skispor-kart WMS"
+  skisporLayer = new OpenLayers.Layer.WMS("Skispor-kart WMS"
   , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste_loype.map&SERVICE=WMS"
   , {layers: 'punkt', transparent: 'true'}
   , {singleTile: true, ratio: 1, isBaseLayer: false} );
   
-  simuleringLayer = new OpenLayers.Layer.WMS("skispor-kart WMS"
+  simuleringLayer = new OpenLayers.Layer.WMS("Skispor dynamisk simulering"
   , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste_simulering.map&SERVICE=WMS"
   , {layers: 'simulering', transparent: 'true'}
   , {singleTile: true, ratio: 1, isBaseLayer: false} );
@@ -105,25 +105,11 @@ var ar = Math.floor(da/31536000000)
 var month = Math.round(((da/31536000000)-ar)*12)
 var tid = ("Det er "+ar + " år og ca "+month+" månader sidan preppemaskinen sist kjørte.")
 
-var query_string = "name=value&name2=value2&name3=value3&";
-var request = new XMLHttpRequest();
-request.open("POST", "run_preppesim-test_mac.sh");
-request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-request.addEventListener('load', function(event) {
-    if (request.status >= 200 && request.status < 300) {
-        console.log(request.responseText);
-    } else {
-        console.warn(request.statusText);
-    }
-});
-request.send(query_string);
 </script>
-
-
 
 <style>
 .minikart {
-width: 1000px;
+width: 100%;
 height: 500px;
 border: 1px solid #cc6;
 }
@@ -139,8 +125,8 @@ if ($_GET['run']) {
 ?>
 
 <!-- This link will add ?run=true to your URL, myfilename.php?run=true -->
-<h1 id="title">Prosjektoppgave</h1>
-
+<h1 id="title">Prosjektoppgave GMGI300</h1>
+<h3 id="title">Annette Primstad og Jon Hidle Pedersen</h3>
 Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet nøyaktighet.
 <div id="message1"></div>
 <div id="message2"></div>
@@ -152,11 +138,8 @@ Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet n
 
 <p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
 </div>
-<form action="./run_preppesim-test_mac.sh" method="POST">
-<input type="hidden" name="name3" value="value3">
-<input type="hidden" name="name2" value="value2">
-<button name="name" value="value">Click me</button>
-<a href="?run=true">Click Me!</a>
+<form action="http://pythontutor.com/visualize.html#mode=edit" method="POST">
+<button name="name" value="value">Python tutor</button>
 </form>
 </body>
 </html>
