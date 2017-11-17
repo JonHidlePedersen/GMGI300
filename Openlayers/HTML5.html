@@ -1,4 +1,3 @@
-
 <html>
 <head>
   <title>Prosjektoppgave (NMBU, Skispor)</title>
@@ -92,7 +91,6 @@ function init(){
   // Med Firefox i Ubuntu LTS fungerer ikke dette!
   if (navigator.geolocation) {
     test = navigator.geolocation.getCurrentPosition(okPosition, errorHighAccuracy,{timeout:2000, enableHighAccuracy: true});
-    alert("getcurrentpos finished"+test)
     if (kart) {
       kart.moveTo(new OpenLayers.LonLat(lon,lat),6);
     }
@@ -138,8 +136,8 @@ Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet n
 
 <p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
 </div>
-<form action="http://pythontutor.com/visualize.html#mode=edit" method="POST">
-<button name="name" value="value">Python tutor</button>
+<form action="http://github.com/JonHidlePedersen/GMGI300" method="POST">
+<button name="name" value="value">Porsjektektets kode: GitHub</button>
 </form>
 </body>
 </html>
