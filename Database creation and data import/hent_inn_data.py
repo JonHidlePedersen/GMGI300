@@ -64,21 +64,8 @@ class PostgresDataInsert:
         self.conn.commit()
         print('Table loype created.')
 
-    def create_table_loypetid(self):
-        """ Creates the table loypetid containing the
-            collums id(PK), time and point"""
-
-        self.cur.execute(
-            "DROP TABLE IF EXISTS loypetid;")
-        self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS loypetid (id SERIAL PRIMARY KEY, \
-            tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
-        self.conn.commit()
-        print('Table loypetid created.')
-
     def insert_position_data(self):
         """ Inserts position and time data into the Postgre database. """
-
 
         print('Started inserting data into loype.')
         for i, line in enumerate(self.outputt):
@@ -143,5 +130,4 @@ if __name__ == '__main__':
     connect_and_insert.create_table_loype()
     connect_and_insert.extractdatafromfile(data_from_file)
     connect_and_insert.insert_position_data()
-    connect_and_insert.create_table_loypetid()
     connect_and_insert.disconnect()

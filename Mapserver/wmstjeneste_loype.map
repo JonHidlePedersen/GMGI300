@@ -1,0 +1,74 @@
+MAP
+  DEBUG ON
+  IMAGETYPE PNG
+  EXTENT 10.7461 59.6185 10.8882 59.6864
+  SIZE 400 400
+  IMAGECOLOR 255 255 204
+  PROJECTION
+  "init=epsg:4326"
+  END # Projection
+  
+  WEB
+  IMAGEPATH "C:/Users/landsat4/Documents/GMGI300/Mapserver/tmp" # kor den legger bildene
+    IMAGEURL "C:/Users/landsat4/Documents/GMGI300/Mapserver/tmp"
+    TEMPLATE "C:/Users/landsat4/Documents/GMGI300/Mapserver/template.html"
+    LOG "C:/Users/landsat4/Documents/GMGI300/Mapserver/tmp/mapserverlog.log"
+  
+  METADATA
+  "wms_title" "Position of a track machine"
+  "wms_onlineresource" "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste.map&SERVICE=WMS"
+  "wms_encoding" "UTF-8"
+  "wms_enable_request" "*"
+  END # Metadata
+  END # Web
+  
+  # Start of symbol definition
+  SYMBOL
+    # Symbol name (referenced in STYLEs)
+    NAME "circle"
+    TYPE ellipse # Type of symbol
+    # Start of the symbol geometry
+    POINTS
+    1 1
+    END # end of POINTS
+    # The symbol should be filled
+    FILLED TRUE
+    # Place the according to its center
+    ANCHORPOINT 0.5 0.5
+  END # end of SYMBOL
+ 
+	 
+    
+  # Start of LAYER DEFINITIONS ---
+  LAYER # States polygon layer
+    DEBUG ON
+    NAME "punkt"
+    CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=gmgi300db user=postgres password=postgres"
+    PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "punkt from loype"
+    STATUS DEFAULT
+    TYPE POINT
+    OPACITY 100
+    METADATA
+    "wms_title" "Punkter"
+    #"wms_include_items" "*"
+    "wms_srs" "EPSG:4326"
+    END # Metadata
+    PROJECTION
+    "init=epsg:4326"
+    END # Projection
+    CLASS
+    NAME "Track created by track machine."
+    STYLE
+      # Symbol to be used (reference)
+      SYMBOL "circle" # Type of symbol
+      SIZE 10
+      # Colour (RGB)
+      COLOR 0 0 0
+    END # Style
+    END # Class
+  END # Layer States polygon
+  
+ 
+END # Map

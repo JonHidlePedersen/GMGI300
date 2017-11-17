@@ -53,35 +53,37 @@ class PostgresDataInsert:
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
 
-
-    def create_table_loypetid(self):
+    def create_table_simulering(self):
         """ Creates the table loypetid containing the
             collums id(PK), time and point"""
 
         self.cur.execute(
-            "DROP TABLE IF EXISTS loypetid;")
+            "DROP TABLE IF EXISTS simulering;")
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS loypetid (id SERIAL PRIMARY KEY, \
+            "CREATE TABLE IF NOT EXISTS simulering (id SERIAL PRIMARY KEY, \
             tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
         self.conn.commit()
-        print('Table loypetid created.')
+        print('Table simulering created.')
 
-    def insert_position_data(self, delay=0):
+    def insert_position_data(self, delay=0, snake_length=20):
         """ Inserts position and time data into the Postgre database. """
-
-        print('Started inserting data into loype.')
+        snake_length = snake_length
+        print('Started inserting data into simulering.')
         for i, line in enumerate(self.outputt):
             lat = line[0]
             lon = line[1]
             date_time = line[2]
             geo = 'Point({} {})'.format(str(lon), str(lat))
-            self.cur.execute('INSERT INTO loypetid (tid, punkt) '
+            self.cur.execute('INSERT INTO simulering (tid, punkt) '
                              'VALUES (%s, (ST_GeometryFromText(%s , 4326)))'
                              , (date_time, geo))
+            if i > snake_length:
+                teller = '{0}'.format(str(i - snake_length))
+                self.cur.execute(
+                    'DELETE FROM simulering WHERE ID = {0}'.format(teller))
+
             self.conn.commit()
             time.sleep(delay)
-            print(i)
-        print('Finished inserting {0} rows into loype.'.format(i))
 
     def disconnect(self):
         """ Disconnects from the PostgreSQL database server """
@@ -120,8 +122,8 @@ class PostgresDataInsert:
 
         return self.outputt
 
-    def run_simulation(self, delaytime):
-        self.create_table_loypetid()
+    def run_simulation(self, delaytime=0):
+        self.create_table_simulering()
         self.insert_position_data(delaytime)
 
 
@@ -136,5 +138,5 @@ if __name__ == '__main__':
     connect_and_insert = PostgresDataInsert(db_name, dbuser, dbpassword, dbport)
     connect_and_insert.connect()
     connect_and_insert.extractdatafromfile(data_from_file)
-    connect_and_insert.run_simulation(0.01)
+    connect_and_insert.run_simulation(0.1)
     connect_and_insert.disconnect()

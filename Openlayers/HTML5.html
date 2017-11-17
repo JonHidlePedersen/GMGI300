@@ -9,7 +9,7 @@
 
   <script type="text/javascript">
     
-var kart, skisporLayer, OLLayer, FKBLayer, Orto, bevegelse;
+var kart, simuleringLayer, skisporLayer, OLLayer, FKBLayer, Orto, bevegelse;
 var lat=59.660, lon=10.770;
 
 
@@ -56,8 +56,13 @@ function init(){
 
   kart = new OpenLayers.Map('kart');
   skisporLayer = new OpenLayers.Layer.WMS("skispor-kart WMS"
-  , "http://192.168.56.101/cgi-bin/mapserv?map=/home/gis/Dokumenter/data/oppgave3_3mapserver/mapserverwms.map&SERVICE=WMS"
+  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste_loype.map&SERVICE=WMS"
   , {layers: 'punkt', transparent: 'true'}
+  , {singleTile: true, ratio: 1, isBaseLayer: false} );
+  
+  simuleringLayer = new OpenLayers.Layer.WMS("skispor-kart WMS"
+  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste_simulering.map&SERVICE=WMS"
+  , {layers: 'simulering', transparent: 'true'}
   , {singleTile: true, ratio: 1, isBaseLayer: false} );
 
   FKBLayer = new OpenLayers.Layer.WMS( "Norges grunnkart"
@@ -78,6 +83,7 @@ function init(){
   kart.addLayer(stedLayer);
   kart.addLayer(accuracyLayer);
   kart.addLayer(skisporLayer);
+  kart.addLayer(simuleringLayer);
   kart.addLayer(Orto);
   kart.moveTo(new OpenLayers.LonLat(lon,lat),6);
   kart.moveTo(new OpenLayers.LonLat(10,60),6);
@@ -128,7 +134,7 @@ border: 1px solid #cc6;
   <?php
 if ($_GET['run']) {
   // This code will run if ?run=true is set.
-  echo shell_exec("python simulering.py");
+  exec(open("python simulering.py").read());
 }
 ?>
 
