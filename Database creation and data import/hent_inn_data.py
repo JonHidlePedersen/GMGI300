@@ -59,8 +59,7 @@ class PostgresDataInsert:
         self.cur.execute(
             "DROP TABLE IF EXISTS loype;")
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS loype (id SERIAL PRIMARY KEY, \
-            tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
+            "CREATE TABLE IF NOT EXISTS loype (tid TIMESTAMP WITH TIME ZONE PRIMARY KEY, punkt geometry(POINT,4326,2));")
         self.conn.commit()
         print('Table loype created.')
 

@@ -60,8 +60,7 @@ class PostgresDataInsert:
         self.cur.execute(
             "DROP TABLE IF EXISTS simulering;")
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS simulering (id SERIAL PRIMARY KEY, \
-            tid TIMESTAMP WITH TIME ZONE, punkt geometry(POINT,4326,2));")
+            "CREATE TABLE IF NOT EXISTS simulering (id SERIAL, tid TIMESTAMP WITH TIME ZONE PRIMARY KEY, punkt geometry(POINT,4326,2));")
         self.conn.commit()
         print('Table simulering created.')
 
