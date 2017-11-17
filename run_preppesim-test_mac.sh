@@ -10,10 +10,10 @@ file=preppemaskin_aas_2010_01-03.txt
 speedup=$1
 starttid=$2
 step=60 #simulation step in seconds
-psql -U postgres -d gmgi300db -p 5433 -w -c "CREATE TABLE skispor (enhet VARCHAR(10), tid TIMESTAMP WITH TIME ZONE);" > /dev/null 2>&1
+psql -U postgres -d gmgi300db -p 5433 -w -c "CREATE TABLE skispor ((id SERIAL PRIMARY KEY, enhet VARCHAR(10), tid TIMESTAMP WITH TIME ZONE);" > /dev/null 2>&1
 psql -U postgres -d gmgi300db -p 5433 -w -c "SELECT AddGeometryColumn('skispor','sted',4326,'POINT',2);" > /dev/null 2>&1
 psql -U postgres -d gmgi300db -p 5433 -w -c "DELETE FROM skispor;" > /dev/null 2>&1
-psql -U postgres -d gmgi300db -p 5433 -w -c "CREATE TABLE skisporsimtid (tid TIMESTAMP WITH TIME ZONE);" > /dev/null 2>&1
+psql -U postgres -d gmgi300db -p 5433 -w -c "CREATE TABLE skisporsimtid ((id SERIAL PRIMARY KEY, tid TIMESTAMP WITH TIME ZONE);" > /dev/null 2>&1
 psql -U postgres -d gmgi300db -p 5433 -w -c "DELETE FROM skisporsimtid;" > /dev/null 2>&1
 echo "Starter $2 - hastighetsfaktor: $1"
 tac $file | dos2unix | (
