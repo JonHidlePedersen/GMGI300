@@ -16,7 +16,7 @@ MAP
   
   METADATA
   "wms_title" "Position of a track machine"
-  "wms_onlineresource" "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste.map&SERVICE=WMS"
+  "wms_onlineresource" "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste_loype.map&SERVICE=WMS"
   "wms_encoding" "UTF-8"
   "wms_enable_request" "*"
   END # Metadata
