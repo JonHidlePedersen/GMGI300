@@ -54,8 +54,9 @@ class PostgresDataInsert:
             print(error)
 
     def create_table_simulering(self):
-        """ Creates the table loypetid containing the
-            collums id(PK), time and point"""
+        """ Creates the table loype containing the
+            collums tid(PK) and point. The table stores the simulated GNSS data
+            from the track machine."""
 
         self.cur.execute(
             "DROP TABLE IF EXISTS simulering;")

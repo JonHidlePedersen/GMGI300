@@ -8,16 +8,11 @@ import psycopg2
 
 
 class PostgresDataInsert:
-    """This class connects and inserts data into a PostgreSQL database.
-    
-    Parameters
-    ----------
-    db_name : 
-    """
+    """This class connects and inserts data into a PostgreSQL database."""
 
     def __init__(self, db_name='gmgi300db', dbuser='postgres',
                  dbpassword='postgres', dbport='5432'):
-        """Constructor for the instance."""
+        """Constructor for the instance. Options for conecting to a database."""
         self.db_name = db_name
         self.dbuser = dbuser
         self.dbpassword = dbpassword
@@ -30,11 +25,11 @@ class PostgresDataInsert:
             # connect to the PostgreSQL server
             print('Connecting to the PostgreSQL database...')
             self.conn = psycopg2.connect(
-                "dbname={0} user={1} password={2} port={3}" \
-                    .format(self.db_name,
-                            self.dbuser,
-                            self.dbpassword,
-                            self.dbport))
+                "dbname={0} user={1} password={2} port={3}"
+                .format(self.db_name,
+                        self.dbuser,
+                        self.dbpassword,
+                        self.dbport))
 
             # create a cursor
             self.cur = self.conn.cursor()
@@ -54,24 +49,29 @@ class PostgresDataInsert:
 
     def create_table_loype(self):
         """ Creates the table loype containing the
-            collums id(PK), time and point"""
+            collums tid(PK) and point. The table stores the GNSS data from the
+            track machine."""
 
         self.cur.execute(
             "DROP TABLE IF EXISTS loype;")
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS loype (tid TIMESTAMP WITH TIME ZONE PRIMARY KEY, punkt geometry(POINT,4326,2));")
+            "CREATE TABLE IF NOT EXISTS loype "
+            "(tid TIMESTAMP WITH TIME ZONE PRIMARY KEY, "
+            "punkt geometry(POINT,4326,2));")
         self.conn.commit()
         print('Table loype created.')
 
     def insert_position_data(self):
-        """ Inserts position and time data into the Postgre database. """
+        """ Inserts GNSS position and time into the PostgreSQL database. Loops
+        through the lines in the output file from the extractdatafromfile
+        function. Each line is inserted into a new row in the table."""
 
         print('Started inserting data into loype.')
-        for i, line in enumerate(self.outputt):
+        for i, line in enumerate(self.output):
             lat = line[0]
             lon = line[1]
             date_time = line[2]
-            geo = 'Point({} {})'.format(str(lon), str(lat))
+            geo = 'Point({0} {1})'.format(str(lon), str(lat))
             self.cur.execute('INSERT INTO loype (tid, punkt) '
                              'VALUES (%s, (ST_GeometryFromText(%s , 4326)))'
                              , (date_time, geo))
@@ -82,7 +82,6 @@ class PostgresDataInsert:
         """ Disconnects from the PostgreSQL database server """
         self.cur.close()
         print('Database connection ended.\n')
-
 
     def extractdatafromfile(self, filnamn):
         """
@@ -99,7 +98,7 @@ class PostgresDataInsert:
         infile.close()
 
         # Splits data using ; and changes numbers from str to int/float.
-        self.outputt = []
+        self.output = []
         for LINE in indata:
             splitdata = LINE.split(";")
 
@@ -109,23 +108,24 @@ class PostgresDataInsert:
                 try:
                     if isinstance(eval(value), (float, int)):
                         splitdata[i] = eval(value)
-                except:
-                    """String is not float or int."""
+                except SyntaxError:
+                    pass  # String is not float or int.
 
-            self.outputt.append(splitdata)
+            self.output.append(splitdata)
 
-        return self.outputt
+        return self.output
 
 
 if __name__ == '__main__':
     # Reads data from the text file and inserts it into a database.
-    db_name = 'gmgi300db'
-    dbuser = 'postgres'
-    dbpassword = 'postgres'
-    dbport = '5432'
+    database_name = 'gmgi300db'
+    database_buser = 'postgres'
+    database_password = 'postgres'
+    database_port = '5432'
     data_from_file = 'preppemaskin_aas_2010_01-03.txt'
 
-    connect_and_insert = PostgresDataInsert(db_name, dbuser, dbpassword, dbport)
+    connect_and_insert = PostgresDataInsert(
+        database_name, database_buser, database_password, database_port)
     connect_and_insert.connect()
     connect_and_insert.create_table_loype()
     connect_and_insert.extractdatafromfile(data_from_file)
