@@ -5,6 +5,7 @@ The module psycopg2 is needed.
 """
 
 import psycopg2
+import time
 
 
 class PostgresDataInsert:
@@ -61,7 +62,21 @@ class PostgresDataInsert:
         self.conn.commit()
         print('Table loype created.')
 
-    def insert_position_data(self):
+    def create_table_simulering(self):
+        """ Creates the table loype containing the
+            collums tid(PK) and point. The table stores the simulated GNSS data
+            from the track machine."""
+
+        self.cur.execute(
+            "DROP TABLE IF EXISTS simulering;")
+        self.cur.execute(
+            "CREATE TABLE IF NOT EXISTS simulering "
+            "(id SERIAL, tid TIMESTAMP WITH TIME ZONE PRIMARY KEY, "
+            "punkt geometry(POINT,4326,2));")
+        self.conn.commit()
+        print('Table simulering created.')
+
+    def insert_into_loype(self):
         """ Inserts GNSS position and time into the PostgreSQL database. Loops
         through the lines in the output file from the extractdatafromfile
         function. Each line is inserted into a new row in the table."""
@@ -77,6 +92,30 @@ class PostgresDataInsert:
                              , (date_time, geo))
         self.conn.commit()
         print('Finished inserting {0} rows into loype.'.format(i))
+
+    def insert_into_simulation(self, simulation_delay=0.1, track_length=20):
+        """ Inserts GNSS position and time into the PostgreSQL database. Loops
+        through the lines in the output file from the extractdatafromfile
+        function. Each line is inserted into a new row in the table. A time
+        delay simulates realtime tracking of the track machine."""
+
+        track_length = track_length
+        print('Started inserting data into simulering.')
+        for i, line in enumerate(self.output):
+            lat = line[0]
+            lon = line[1]
+            date_time = line[2]
+            geo = 'Point({} {})'.format(str(lon), str(lat))
+            self.cur.execute('INSERT INTO simulering (tid, punkt) '
+                             'VALUES (%s, (ST_GeometryFromText(%s , 4326)))'
+                             , (date_time, geo))
+            if i > track_length:
+                teller = '{0}'.format(str(i - track_length))
+                self.cur.execute(
+                    'DELETE FROM simulering WHERE ID = {0}'.format(teller))
+
+            self.conn.commit()
+            time.sleep(simulation_delay)
 
     def disconnect(self):
         """ Disconnects from the PostgreSQL database server """
@@ -115,6 +154,11 @@ class PostgresDataInsert:
 
         return self.output
 
+    def run_simulation(self, delaytime=0.1):
+        """Function that inserts data into the table simulation with a delay."""
+        self.create_table_simulering()
+        self.insert_into_simulation(delaytime)
+
 
 if __name__ == '__main__':
     # Reads data from the text file and inserts it into a database.
@@ -123,11 +167,13 @@ if __name__ == '__main__':
     database_password = 'postgres'
     database_port = '5432'
     data_from_file = 'preppemaskin_aas_2010_01-03.txt'
+    delay = 0.01
 
     connect_and_insert = PostgresDataInsert(
         database_name, database_buser, database_password, database_port)
     connect_and_insert.connect()
     connect_and_insert.create_table_loype()
     connect_and_insert.extractdatafromfile(data_from_file)
-    connect_and_insert.insert_position_data()
+    connect_and_insert.insert_into_loype()
+    connect_and_insert.run_simulation()
     connect_and_insert.disconnect()
