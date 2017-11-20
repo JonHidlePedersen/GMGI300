@@ -81,7 +81,8 @@ class PostgresDataInsert:
     def disconnect(self):
         """ Disconnects from the PostgreSQL database server """
         self.cur.close()
-        print('Database connection ended.')
+        print('Database connection ended.\n')
+
 
     def extractdatafromfile(self, filnamn):
         """

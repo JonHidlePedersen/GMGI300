@@ -87,7 +87,7 @@ class PostgresDataInsert:
     def disconnect(self):
         """ Disconnects from the PostgreSQL database server """
         self.cur.close()
-        print('Database connection ended.')
+        print('Database connection ended.\n')
 
     def extractdatafromfile(self, filnamn):
         """
@@ -136,6 +136,7 @@ if __name__ == '__main__':
 
     connect_and_insert = PostgresDataInsert(db_name, dbuser, dbpassword, dbport)
     connect_and_insert.connect()
+    create_table_simulering()
     connect_and_insert.extractdatafromfile(data_from_file)
     connect_and_insert.run_simulation(0.1)
     connect_and_insert.disconnect()

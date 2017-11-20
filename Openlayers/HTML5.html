@@ -108,7 +108,7 @@ var tid = ("Det er "+ar + " år og ca "+month+" månader sidan preppemaskinen si
 <style>
 .minikart {
 width: 100%;
-height: 500px;
+height: 50%;
 border: 1px solid #cc6;
 }
 </style>
@@ -130,19 +130,25 @@ Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet n
 <div id="message2"></div>
 <div id="message3"></div>
 <div id="message4"></div>
-<div id="kart" class="minikart"></div>
-<div id="docs"> 
-<button type="button" onclick="alert(tid)">Korti kjørte preppemaskinen sist</button>
 
-<p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
-</div>
-<form action="http://github.com/JonHidlePedersen/GMGI300" method="POST">
-<button name="name" value="value">Porsjektektets kode: GitHub</button>
+<form action="/kjor_hent_inn_data" method="POST">
+<button name="name" value="value">Hent inn kjørt løype til loypemaskin</button>
 </form>
-  
+
 <form action="/kjor_simulering" method="POST">
 <button name="name" value="value">Kjor simulering av loypemaskin</button>
 </form>
+
+<button type="button" onclick="alert(tid)">Korti kjørte preppemaskinen sist</button>
+
+<p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
+<form action="https://github.com/JonHidlePedersen/GMGI300" method="GET">
+<button name="name" value="value">Porsjektektets kode: GitHub</button>
+</form>
+
+
+<div id="kart" class="minikart"></div>
+<div id="docs"></div>
 
 </body>
 </html>
