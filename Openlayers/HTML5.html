@@ -8,7 +8,7 @@
 
   <script type="text/javascript">
     
-var kart, simuleringLayer, skisporLayer, OLLayer, FKBLayer, Orto, bevegelse;
+var kart, simuleringLayer, skisporLayer, OLLayer, FKBLayer, Orto;
 var lat=59.660, lon=10.770;
 
 
@@ -18,7 +18,7 @@ function errorLowAccuracy(error) {
 } // errorLowAccuracy
 
 function errorHighAccuracy(error) {
-  if (error.code == error.TIMEOUT) {
+  if (error.code === error.TIMEOUT) {
     test = navigator.geolocation.getCurrentPosition(okPosition, errorLowAccuracy,{timeout:2000, enableHighAccuracy: false});
   }
   else {
@@ -32,7 +32,7 @@ function okPosition(position) {
   lat = position.coords.latitude;
   lon = position.coords.longitude;
   acc = position.coords.accuracy;
-  document.getElementById('message4').innerHTML = "Din posisjon er funnet til: ("+lon+", "+lat+")"+" - "+acc
+  document.getElementById('message4').innerHTML = "Din posisjon er funnet til: ("+lon+", "+lat+")"+"    Nøyaktighet(meter) +- "+acc;
   sted = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lon, lat));
   stedLayer.addFeatures(sted);
   apprdiff = acc/111000;
@@ -98,9 +98,9 @@ function init(){
 
 } // init
 
-var da = new Date()-new Date(2011, 3, 3)
-var ar = Math.floor(da/31536000000)
-var month = Math.round(((da/31536000000)-ar)*12)
+var da = new Date()-new Date(2011, 3, 3);
+var ar = Math.floor(da/31536000000);
+var month = Math.round(((da/31536000000)-ar)*12);
 var tid = ("Det er "+ar + " år og ca "+month+" månader sidan preppemaskinen sist kjørte.")
 
 </script>
@@ -109,22 +109,16 @@ var tid = ("Det er "+ar + " år og ca "+month+" månader sidan preppemaskinen si
 .minikart {
 width: 100%;
 height: 50%;
-border: 1px solid #cc6;
+border: 1px solid #000000;
 }
 </style>
 </head>
 <body onload="init()">
 
-  <?php
-if ($_GET['run']) {
-  // This code will run if ?run=true is set.
-  exec(open("python simulering.py").read());
-}
-?>
 
 <!-- This link will add ?run=true to your URL, myfilename.php?run=true -->
 <h1 id="title">Prosjektoppgave GMGI300</h1>
-<h3 id="title">Annette Primstad og Jon Hidle Pedersen</h3>
+<h3 id="subtitle">Annette Primstad og Jon Hidle Pedersen</h3>
 Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet nøyaktighet.
 <div id="message1"></div>
 <div id="message2"></div>
@@ -139,13 +133,11 @@ Du kan velge å tillate lesing av din posisjon, for å vise sted og tilnærmet n
 <button name="name" value="value">Kjor simulering av loypemaskin</button>
 </form>
 
-<button type="button" onclick="alert(tid)">Korti kjørte preppemaskinen sist</button>
+<button type="button" onclick="alert(tid)">Kva tid kjørte preppemaskinen sist?</button>
 
 <p>Koordinatsystem: WGS1984, ikke-projisert (lengdegrader-breddegrader).</p>
-<form action="https://github.com/JonHidlePedersen/GMGI300" method="GET">
-<button name="name" value="value">Porsjektektets kode: GitHub</button>
-</form>
 
+<button class="btn btn-success" onclick=" window.open('https://github.com/JonHidlePedersen/GMGI300','_blank')"> Porsjektektetkode: GitHub</button>
 
 <div id="kart" class="minikart"></div>
 <div id="docs"></div>
