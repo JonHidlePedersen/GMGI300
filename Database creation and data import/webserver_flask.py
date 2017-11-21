@@ -4,11 +4,13 @@ import hent_inn_data
 app = Flask(__name__, template_folder="../Openlayers")
 
 
+# Starts the webserver and opens the .html file.
 @app.route('/')
 def index(name=None):
     return render_template('HTML5.html', name=name)
 
 
+# When button is clicked a script is run. The webpage is reloaded.
 @app.route('/kjor_hent_inn_data', methods=['GET', 'POST'])
 def parse1(name=None):
     data_from_file = 'preppemaskin_aas_2010_01-03.txt'
@@ -22,6 +24,7 @@ def parse1(name=None):
     return render_template('HTML5.html', name=name)
 
 
+# When button is clicked a script is run. The webpage is reloaded.
 @app.route('/kjor_simulering', methods=['GET', 'POST'])
 def parse2(name=None):
     data_from_file = 'preppemaskin_aas_2010_01-03.txt'

@@ -55,12 +55,12 @@ function init(){
 
   kart = new OpenLayers.Map('kart');
   skisporLayer = new OpenLayers.Layer.WMS("Skispor-kart WMS"
-  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste_loype.map&SERVICE=WMS"
+  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/WMStjeneste.map&SERVICE=WMS"
   , {layers: 'punkt', transparent: 'true'}
   , {singleTile: true, ratio: 1, isBaseLayer: false} );
   
   simuleringLayer = new OpenLayers.Layer.WMS("Skispor dynamisk simulering"
-  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/wmstjeneste_simulering.map&SERVICE=WMS"
+  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/WMStjeneste.map&SERVICE=WMS"
   , {layers: 'simulering', transparent: 'true'}
   , {singleTile: true, ratio: 1, isBaseLayer: false} );
 
