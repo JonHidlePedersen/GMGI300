@@ -54,9 +54,20 @@ function init(){
   } // if else geolocation
 
   kart = new OpenLayers.Map('kart');
-  skisporLayer = new OpenLayers.Layer.WMS("Skispor-kart WMS"
+  
+  gamalLayer = new OpenLayers.Layer.WMS("Gamle loyper(over 5 dagar sidan)"
   , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/WMStjeneste.map&SERVICE=WMS"
-  , {layers: 'punkt', transparent: 'true'}
+  , {layers: 'Gamle loyper(over 5 dagar sidan)', transparent: 'true'}
+  , {singleTile: true, ratio: 1, isBaseLayer: false} ); 
+  
+  preparertLayer = new OpenLayers.Layer.WMS("Preparerte loyper(inntil 5 dagar sidan)"
+  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/WMStjeneste.map&SERVICE=WMS"
+  , {layers: 'Preparerte loyper(inntil 5 dagar sidan)', transparent: 'true'}
+  , {singleTile: true, ratio: 1, isBaseLayer: false} );
+  
+  nypreparertLayer = new OpenLayers.Layer.WMS("SNypreparert (inntil 1 dag sidan)"
+  , "http://localhost/cgi-bin/mapserv.exe?map=C:/Users/landsat4/Documents/GMGI300/Mapserver/WMStjeneste.map&SERVICE=WMS"
+  , {layers: 'Nypreparert (inntil 1 dag sidan)', transparent: 'true'}
   , {singleTile: true, ratio: 1, isBaseLayer: false} );
   
   simuleringLayer = new OpenLayers.Layer.WMS("Skispor dynamisk simulering"
@@ -81,7 +92,9 @@ function init(){
   kart.addLayer(OLLayer);
   kart.addLayer(stedLayer);
   kart.addLayer(accuracyLayer);
-  kart.addLayer(skisporLayer);
+  kart.addLayer(gamalLayer);
+  kart.addLayer(preparertLayer);
+  kart.addLayer(nypreparertLayer);
   kart.addLayer(simuleringLayer);
   kart.addLayer(Orto);
   kart.moveTo(new OpenLayers.LonLat(lon,lat),6);

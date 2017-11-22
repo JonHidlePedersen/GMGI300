@@ -60,9 +60,80 @@ MAP
         # Place the according to its center
         ANCHORPOINT 0.5 0.5
     END # end of SYMBOL
+	
+	
+
+	# Start of LAYER DEFINITIONS ---
+    LAYER # Gamle loyper(over 5 dagar sidan)
+        DEBUG ON
+        NAME "Gamle loyper(over 5 dagar sidan)"
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=gmgi300db user=postgres password=postgres"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid < CURRENT_TIMESTAMP - INTERVAL '5 day') as gammal using unique tid using srid = 4326"
+		#DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid < CURRENT_TIMESTAMP - INTERVAL '5 day') as gammal using unique tid using srid = 4326"
+		STATUS ON
+        TYPE POINT
+        OPACITY 100
+        METADATA
+        "wms_title" "Gamle loyper(over 5 dagar sidan)"
+        #"wms_include_items" "*"
+        "wms_srs" "EPSG:4326"
+        END # Metadata
+        PROJECTION
+        "init=epsg:4326"
+        END # Projection
+        CLASS
+            NAME "Gamle loyper(over 5 dagar sidan)"
+            STYLE
+                # Symbol to be used (reference)
+                SYMBOL "circle" # Type of symbol
+                SIZE 10
+                # Colour (RGB)
+                COLOR 255 0 0
+				OUTLINECOLOR 0 0 0
+            END # Style
+        END # Class
+    END # Layer States polygon
 
 
+	
     # Start of LAYER DEFINITIONS ---
+    LAYER # Preparerte loyper(inntil 5 dagar sidan)
+        DEBUG ON
+        NAME "Preparerte loyper(inntil 5 dagar sidan)"
+        CONNECTIONTYPE POSTGIS
+        CONNECTION "host=localhost port=5432 dbname=gmgi300db user=postgres password=postgres"
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid > date'2011-03-04' - INTERVAL '5 day' AND tid < CURRENT_TIMESTAMP - INTERVAL '1 day') as preparert using unique tid using srid = 4326"
+		#DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid > CURRENT_TIMESTAMP - INTERVAL '5 day' AND tid < CURRENT_TIMESTAMP - INTERVAL '1 day') as preparert using unique tid using srid = 4326"
+		STATUS ON
+        TYPE POINT
+        OPACITY 100
+        METADATA
+        "wms_title" "Preparerte loyper(inntil 5 dagar sidan)"
+        #"wms_include_items" "*"
+        "wms_srs" "EPSG:4326"
+        END # Metadata
+        PROJECTION
+        "init=epsg:4326"
+        END # Projection
+        CLASS
+            NAME "Preparerte loyper(inntil 5 dagar sidan)"
+            STYLE
+                # Symbol to be used (reference)
+                SYMBOL "circle" # Type of symbol
+                SIZE 10
+                # Colour (RGB)
+                COLOR 255 255 45
+				OUTLINECOLOR 0 0 0
+            END # Style
+        END # Class
+    END # Layer States polygon
+
+	
+    	
+	# Start of LAYER DEFINITIONS ---
     LAYER # Nypreparert (inntil 1 dag sidan)
         DEBUG ON
         NAME "Nypreparert (inntil 1 dag sidan)"
@@ -94,75 +165,6 @@ MAP
             END # Style
         END # Class
     END # Layer States polygon
-	
-	
-	
-    # Start of LAYER DEFINITIONS ---
-    LAYER # Preparerte loyper(5 dagar sidan)
-        DEBUG ON
-        NAME "Preparerte loyper(5 dagar sidan)"
-        CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=gmgi300db user=postgres password=postgres"
-        PROCESSING "CLOSE_CONNECTION=DEFER"
-        DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid > date'2011-03-04' - INTERVAL '5 day' AND tid < CURRENT_TIMESTAMP - INTERVAL '1 day') as preparert using unique tid using srid = 4326"
-		#DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid > CURRENT_TIMESTAMP - INTERVAL '5 day' AND tid < CURRENT_TIMESTAMP - INTERVAL '1 day') as preparert using unique tid using srid = 4326"
-		STATUS ON
-        TYPE POINT
-        OPACITY 100
-        METADATA
-        "wms_title" "Preparerte loyper(5 dagar sidan)"
-        #"wms_include_items" "*"
-        "wms_srs" "EPSG:4326"
-        END # Metadata
-        PROJECTION
-        "init=epsg:4326"
-        END # Projection
-        CLASS
-            NAME "Preparerte loyper(5 dagar sidan)"
-            STYLE
-                # Symbol to be used (reference)
-                SYMBOL "circle" # Type of symbol
-                SIZE 10
-                # Colour (RGB)
-                COLOR 255 255 45
-				OUTLINECOLOR 0 0 0
-            END # Style
-        END # Class
-    END # Layer States polygon
-
-	
-    # Start of LAYER DEFINITIONS ---
-    LAYER # Gamle loyper(over 5 dagar sidan)
-        DEBUG ON
-        NAME "Gamle loyper(over 5 dagar sidan)"
-        CONNECTIONTYPE POSTGIS
-        CONNECTION "host=localhost port=5432 dbname=gmgi300db user=postgres password=postgres"
-        PROCESSING "CLOSE_CONNECTION=DEFER"
-        DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid < CURRENT_TIMESTAMP - INTERVAL '5 day') as gammal using unique tid using srid = 4326"
-		#DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid < CURRENT_TIMESTAMP - INTERVAL '5 day') as gammal using unique tid using srid = 4326"
-		STATUS ON
-        TYPE POINT
-        OPACITY 100
-        METADATA
-        "wms_title" "Gamle loyper(over 5 dagar sidan)"
-        #"wms_include_items" "*"
-        "wms_srs" "EPSG:4326"
-        END # Metadata
-        PROJECTION
-        "init=epsg:4326"
-        END # Projection
-        CLASS
-            NAME "Gamle loyper(over 5 dagar sidan)"
-            STYLE
-                # Symbol to be used (reference)
-                SYMBOL "circle" # Type of symbol
-                SIZE 10
-                # Colour (RGB)
-                COLOR 255 0 0
-				OUTLINECOLOR 0 0 0
-            END # Style
-        END # Class
-    END # Layer States polygon	
 	
 	
 	
