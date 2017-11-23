@@ -70,7 +70,7 @@ MAP
         CONNECTIONTYPE POSTGIS
         CONNECTION "host=localhost port=5432 dbname=gmgi300db user=postgres password=postgres"
         PROCESSING "CLOSE_CONNECTION=DEFER"
-        DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid < CURRENT_TIMESTAMP - INTERVAL '5 day') as gammal using unique tid using srid = 4326"
+        DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid < date'2011-03-04' - INTERVAL '5 day') as gammal using unique tid using srid = 4326"
 		#DATA "punkt from (SELECT punkt, tid FROM loype WHERE tid < CURRENT_TIMESTAMP - INTERVAL '5 day') as gammal using unique tid using srid = 4326"
 		STATUS ON
         TYPE POINT
