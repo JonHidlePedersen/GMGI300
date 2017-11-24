@@ -13,7 +13,7 @@ MAP
     WEB
     IMAGEPATH "C:/Users/landsat4/Documents/GMGI300/Mapserver/tmp" # kor den legger bildene
     IMAGEURL "C:/Users/landsat4/Documents/GMGI300/Mapserver/tmp"
-    TEMPLATE "C:/Users/landsat4/Documents/GMGI300/Mapserver/template.html"
+    TEMPLATE "C:/Users/landsat4/Documents/GMGI300/Openlayers/prosjekt_web.html"
     LOG "C:/Users/landsat4/Documents/GMGI300/Mapserver/tmp/mapserverlog.log"
 
         METADATA
