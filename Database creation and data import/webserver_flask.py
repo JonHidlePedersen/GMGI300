@@ -7,7 +7,7 @@ app = Flask(__name__, template_folder="../Openlayers")
 # Starts the webserver and opens the .html file.
 @app.route('/')
 def index(name=None):
-    return render_template('HTML5.html', name=name)
+    return render_template('prosjekt_web.html', name=name)
 
 
 # When button is clicked a script is run. The webpage is reloaded.
@@ -21,7 +21,7 @@ def parse1(name=None):
     connect_and_insert.extractdatafromfile(data_from_file)
     connect_and_insert.insert_into_loype()
     connect_and_insert.disconnect()
-    return render_template('HTML5.html', name=name)
+    return render_template('prosjekt_web.html', name=name)
 
 
 # When button is clicked a script is run. The webpage is reloaded.
@@ -35,7 +35,7 @@ def parse2(name=None):
     connect_and_insert.extractdatafromfile(data_from_file)
     connect_and_insert.run_simulation(0.1)
     connect_and_insert.disconnect()
-    return render_template('HTML5.html', name=name)
+    return render_template('prosjekt_web.html', name=name)
 
 
 if __name__ == '__main__':
